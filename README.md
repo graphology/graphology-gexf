@@ -14,8 +14,6 @@ npm install graphology-gexf
 
 ## Usage
 
-**For the browser**
-
 * [Browser parser](#browser-parser)
 
 ### Browser parser
