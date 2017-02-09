@@ -5,12 +5,13 @@
   "main": "index.js",
   "files": [
     "index.js",
-    "node",
-    "web"
+    "browser",
+    "node"
   ],
   "scripts": {
     "lint": "eslint *.js",
-    "test": "mocha"
+    "test:browser": "mocha ./test/browser/endpoint.js",
+    "test": "npm run test:browser"
   },
   "repository": {
     "type": "git",
@@ -33,10 +34,14 @@
   "devDependencies": {
     "@yomguithereal/eslint-config": "^3.0.0",
     "eslint": "^3.5.0",
-    "graphology": "0.4.0",
-    "mocha": "^3.0.2"
+    "graphology": "0.5.1",
+    "mocha": "^3.0.2",
+    "xmldom": "^0.1.27"
   },
   "eslintConfig": {
     "extends": "@yomguithereal/eslint-config"
+  },
+  "dependencies": {
+    "graphology-utils": "^1.1.1"
   }
 }
