@@ -48,29 +48,26 @@ function cast(type, value) {
 }
 
 /**
- * Function used to get the desired attribute from a namespaced node.
+ * Function used to convert a viz:color attribute into a CSS rgba? string.
  *
- * @param  {string} namespace - XML namespace.
- * @param  {Node}   node      - DOM node.
- * @param  {string} name      - Name of the attribute.
- * @return {string}           - String value.
+ * @param  {Node}   element - DOM element.
+ * @return {string}
  */
-function getAttributeNS(namespace, node, attribute) {
-  var value = node.getAttribute(namespace + ':' + attribute);
+function toRGBString(element) {
+  var a = element.getAttribute('a'),
+      r = element.getAttribute('r'),
+      g = element.getAttribute('g'),
+      b = element.getAttribute('b');
 
-  if (value === undefined)
-    value = node.getAttributeNS(namespace, attribute);
-
-  if (value === undefined)
-    value = node.getAttribute(attribute);
-
-  return value;
+  return a ?
+    ('rgba(' + r + ',' + g + ',' + b + ',' + a + ')') :
+    ('rgb(' + r + ',' + g + ',' + b + ')');
 }
 
 /**
  * Function used to collect meta information.
  *
- * @param  {Array<Node>} elements - Target DOM node.
+ * @param  {Array<Node>} elements - Target DOM element.
  * @return {object}
  */
 function collectMeta(elements) {
@@ -92,7 +89,7 @@ function collectMeta(elements) {
 /**
  * Function used to extract the model from the right elements.
  *
- * @param  {Array<Node>} elements - Target DOM nodes.
+ * @param  {Array<Node>} elements - Target DOM elements.
  * @return {array}                - The model & default attributes.
  */
 function extractModel(elements) {
@@ -131,7 +128,7 @@ function extractModel(elements) {
  * Function used to collect an element's attributes.
  *
  * @param  {object} model   - Data model to use.
- * @param  {Node}   element - Target DOM node.
+ * @param  {Node}   element - Target DOM element.
  * @return {object}         - The collected attributes.
  */
 function collectAttributes(model, element) {
@@ -158,7 +155,70 @@ function collectAttributes(model, element) {
     );
   }
 
+  // TODO: shortcut here to avoid viz when namespace is not set
+
+  // Attempting to find viz namespace tags
+
+  //-- 1) Color
+  var vizElement = getFirstMatchingVizTag(element, 'color');
+
+  if (vizElement)
+    data.color = toRGBString(vizElement);
+
+  //-- 2) Size
+  vizElement = getFirstMatchingVizTag(element, 'size');
+
+  if (vizElement)
+    data.size = +vizElement.getAttribute('value');
+
+  //-- 3) Position
+  var x, y, z;
+
+  vizElement = getFirstMatchingVizTag(element, 'position');
+
+  if (vizElement) {
+    x = vizElement.getAttribute('x');
+    y = vizElement.getAttribute('y');
+    z = vizElement.getAttribute('z');
+
+    if (x)
+      data.x = +x;
+    if (y)
+      data.y = +y;
+    if (z)
+      data.z = +z;
+  }
+
+  //-- 4) Shape
+  vizElement = getFirstMatchingVizTag(element, 'shape');
+
+  if (vizElement)
+    data.shape = vizElement.getAttribute('value');
+
+  //-- 5) Thickness
+  vizElement = getFirstMatchingVizTag(element, 'thickness');
+
+  if (vizElement)
+    data.thickness = +vizElement.getAttribute('value');
+
   return data;
+}
+
+/**
+ * Function returning the first matching tag of the `viz` namespace matching
+ * the desired tag name.
+ *
+ * @param  {Node}   element - Target DOM element.
+ * @param  {string} name    - Tag name.
+ * @return {Node}
+ */
+function getFirstMatchingVizTag(element, name) {
+  var vizElement = element.getElementsByTagName('viz:' + name)[0];
+
+  if (!vizElement)
+    vizElement = element.getElementsByTagNameNS('viz', name)[0];
+
+  return vizElement;
 }
 
 /**
@@ -197,7 +257,7 @@ module.exports = function parse(Graph, source) {
   var ROOT_ELEMENT = xmlDoc.getElementsByTagName('gexf')[0],
       GRAPH_ELEMENT = xmlDoc.getElementsByTagName('graph')[0],
       META_ELEMENT = xmlDoc.getElementsByTagName('meta')[0],
-      META_ELEMENTS = META_ELEMENT.childNodes || [],
+      META_ELEMENTS = (META_ELEMENT && META_ELEMENT.childNodes) || [],
       NODE_ELEMENTS = xmlDoc.getElementsByTagName('node'),
       EDGE_ELEMENTS = xmlDoc.getElementsByTagName('edge'),
       MODEL_ELEMENTS = xmlDoc.getElementsByTagName('attributes'),
@@ -214,8 +274,7 @@ module.exports = function parse(Graph, source) {
   }
 
   // Information
-  var HAS_VIZ = getAttributeNS('xmlns', ROOT_ELEMENT, 'viz'),
-      DEFAULT_EDGE_TYPE = GRAPH_ELEMENT.getAttribute('defaultedgetype') || 'directed';
+  var DEFAULT_EDGE_TYPE = GRAPH_ELEMENT.getAttribute('defaultedgetype') || 'directed';
 
   if (DEFAULT_EDGE_TYPE === 'mutual')
     DEFAULT_EDGE_TYPE = 'undirected';
@@ -239,7 +298,7 @@ module.exports = function parse(Graph, source) {
 
   // Collecting meta
   var meta = collectMeta(META_ELEMENTS),
-      lastModifiedDate = META_ELEMENT.getAttribute('lastmodifieddate');
+      lastModifiedDate = META_ELEMENT && META_ELEMENT.getAttribute('lastmodifieddate');
 
   graph.replaceAttributes(meta);
 
