@@ -3,12 +3,12 @@
  * ==========================================
  */
 var assert = require('assert'),
+    Graph = require('graphology'),
     parser = require('../../browser/parser.js'),
-    Graph = require('graphology');
-
-var resources = require('../resources');
+    common = require('../common.js');
 
 describe('Parser', function() {
+  this.timeout(5 * 1000);
 
   it('should throw if not given a valid constructor.', function() {
     assert.throws(function() {
@@ -22,9 +22,5 @@ describe('Parser', function() {
     }, /source/);
   });
 
-  it('should succeed in parsing a simple file.', function() {
-    const graph = parser(Graph, resources.edge_viz);
-
-    // console.log(graph);
-  });
+  common.testAllFiles(parser);
 });
