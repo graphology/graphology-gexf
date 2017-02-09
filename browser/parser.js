@@ -7,6 +7,16 @@
 var isGraphConstructor = require('graphology-utils/is-graph-constructor');
 
 /**
+ * Function checking whether the given value is a NaN.
+ *
+ * @param  {any} value - Value to test.
+ * @return {boolean}
+ */
+function isReallyNaN(value) {
+  return value !== value;
+}
+
+/**
  * Function used to cast a string value to the desired type.
  *
  * @param  {string} type - Value type.
@@ -57,6 +67,42 @@ function getAttributeNS(namespace, node, attribute) {
 }
 
 /**
+ * Function used to extract the model from the right elements.
+ *
+ * @param  {Array<Node>} elements - Target DOM nodes.
+ * @return {array}                - The model & default attributes.
+ */
+function extractModel(elements) {
+  var model = {},
+      defaults = {},
+      element;
+
+  for (var i = 0, l = elements.length; i < l; i++) {
+    element = elements[i];
+    id = element.getAttribute('id') || element.getAttribute('for');
+
+    model[id] = {
+      id: id,
+      type: element.getAttribute('type') || 'string',
+      title: !isReallyNaN(+id) ?
+        (element.getAttribute('title') || id) :
+        id
+    };
+
+    // Default?
+    defaultElement = element.getElementsByTagName('default')[0];
+
+    if (defaultElement)
+      defaults[model[id].title] = cast(
+        model[id].type,
+        defaultElement.textContent
+      );
+  }
+
+  return [model, defaults];
+}
+
+/**
  * Function used to collect an element's attributes.
  *
  * @param  {object} model   - Data model to use.
@@ -72,17 +118,17 @@ function collectAttributes(model, element) {
 
   var valueElements = element.getElementsByTagName('attvalue'),
       valueElement,
-      modelId;
+      id;
 
   for (var i = 0, l = valueElements.length; i < l; i++) {
     valueElement = valueElements[i];
-    modelId = (
+    id = (
       valueElement.getAttribute('id') ||
       valueElement.getAttribute('for')
     );
 
-    data[model[modelId].title] = cast(
-      model[modelId].type,
+    data[model[id].title] = cast(
+      model[id].type,
       valueElement.getAttribute('value')
     );
   }
@@ -103,7 +149,12 @@ module.exports = function parse(Graph, source) {
   var xmlDoc = source;
 
   var element,
-      modelId,
+      result,
+      type,
+      source,
+      target,
+      attributes,
+      id,
       i,
       l;
 
@@ -146,30 +197,18 @@ module.exports = function parse(Graph, source) {
     DEFAULT_EDGE_TYPE = 'undirected';
 
   // Computing models
-  var NODE_MODEL = {},
-      NODE_DEFAULT_ATTRIBUTES = {},
-      defaultElement;
+  result = extractModel(NODE_MODEL_ELEMENTS);
+  NODE_MODEL = result[0];
+  NODE_DEFAULT_ATTRIBUTES = result[1];
 
-  for (i = 0, l = NODE_MODEL_ELEMENTS.length; i < l; i++) {
-    element = NODE_MODEL_ELEMENTS[i];
-    modelId = element.getAttribute('id') || element.getAttribute('for');
-
-    NODE_MODEL[modelId] = {
-      id: modelId,
-      type: element.getAttribute('type') || 'string',
-      title: element.getAttribute('title') || modelId
-    };
-
-    // Default?
-    defaultElement = element.getElementsByTagName('default')[0];
-
-    if (defaultElement)
-      NODE_DEFAULT_ATTRIBUTES[NODE_MODEL[modelId].title] = cast(NODE_MODEL[modelId].type, defaultElement.textContent);
-  }
+  result = extractModel(EDGE_MODEL_ELEMENTS);
+  EDGE_MODEL = result[0];
+  EDGE_DEFAULT_ATTRIBUTES = result[1];
 
   // Instantiating our graph
   var graph = new Graph({
-    defaultNodeAttributes: NODE_DEFAULT_ATTRIBUTES
+    defaultNodeAttributes: NODE_DEFAULT_ATTRIBUTES,
+    defaultEdgeAttributes: EDGE_DEFAULT_ATTRIBUTES
   });
 
   // Adding nodes
@@ -180,6 +219,30 @@ module.exports = function parse(Graph, source) {
       element.getAttribute('id'),
       collectAttributes(NODE_MODEL, element)
     );
+  }
+
+  // Adding edges
+  for (i = 0, l = EDGE_ELEMENTS.length; i < l; i++) {
+    element = EDGE_ELEMENTS[i];
+
+    id = element.getAttribute('id');
+    type = element.getAttribute('type') || DEFAULT_EDGE_TYPE;
+    source = element.getAttribute('source');
+    target = element.getAttribute('target');
+    attributes = collectAttributes(EDGE_MODEL, element);
+
+    if (id) {
+      if (type === 'directed')
+        graph.addDirectedEdgeWithKey(id, source, target, attributes);
+      else
+        graph.addUndirectedEdgeWithKey(id, source, target, attributes);
+    }
+    else {
+      if (type === 'directed')
+        graph.addDirectedEdge(source, target, attributes);
+      else
+        graph.addUndirectedEdge(source, target, attributes);
+    }
   }
 
   return graph;

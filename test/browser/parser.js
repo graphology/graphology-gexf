@@ -23,7 +23,7 @@ describe('Parser', function() {
   });
 
   it('should succeed in parsing a simple file.', function() {
-    const graph = parser(Graph, resources.minimal);
+    const graph = parser(Graph, resources.edge_data);
 
     // console.log(graph);
   });
