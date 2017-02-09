@@ -1,3 +1,4 @@
+/* eslint no-self-compare: 0 */
 /**
  * Graphology Browser GEXF Parser
  * ===============================
@@ -67,6 +68,28 @@ function getAttributeNS(namespace, node, attribute) {
 }
 
 /**
+ * Function used to collect meta information.
+ *
+ * @param  {Array<Node>} elements - Target DOM node.
+ * @return {object}
+ */
+function collectMeta(elements) {
+  var meta = {},
+      element;
+
+  for (var i = 0, l = elements.length; i < l; i++) {
+    element = elements[i];
+
+    if (element.nodeName === '#text')
+      continue;
+
+    meta[element.tagName.toLowerCase()] = element.textContent;
+  }
+
+  return meta;
+}
+
+/**
  * Function used to extract the model from the right elements.
  *
  * @param  {Array<Node>} elements - Target DOM nodes.
@@ -75,7 +98,9 @@ function getAttributeNS(namespace, node, attribute) {
 function extractModel(elements) {
   var model = {},
       defaults = {},
-      element;
+      element,
+      defaultElement,
+      id;
 
   for (var i = 0, l = elements.length; i < l; i++) {
     element = elements[i];
@@ -151,10 +176,10 @@ module.exports = function parse(Graph, source) {
   var element,
       result,
       type,
-      source,
-      target,
       attributes,
       id,
+      s,
+      t,
       i,
       l;
 
@@ -172,6 +197,7 @@ module.exports = function parse(Graph, source) {
   var ROOT_ELEMENT = xmlDoc.getElementsByTagName('gexf')[0],
       GRAPH_ELEMENT = xmlDoc.getElementsByTagName('graph')[0],
       META_ELEMENT = xmlDoc.getElementsByTagName('meta')[0],
+      META_ELEMENTS = META_ELEMENT.childNodes || [],
       NODE_ELEMENTS = xmlDoc.getElementsByTagName('node'),
       EDGE_ELEMENTS = xmlDoc.getElementsByTagName('edge'),
       MODEL_ELEMENTS = xmlDoc.getElementsByTagName('attributes'),
@@ -189,8 +215,6 @@ module.exports = function parse(Graph, source) {
 
   // Information
   var HAS_VIZ = getAttributeNS('xmlns', ROOT_ELEMENT, 'viz'),
-      VERSION = ROOT_ELEMENT.getAttribute('version'),
-      MODE = GRAPH_ELEMENT.getAttribute('mode') || 'static',
       DEFAULT_EDGE_TYPE = GRAPH_ELEMENT.getAttribute('defaultedgetype') || 'directed';
 
   if (DEFAULT_EDGE_TYPE === 'mutual')
@@ -198,18 +222,29 @@ module.exports = function parse(Graph, source) {
 
   // Computing models
   result = extractModel(NODE_MODEL_ELEMENTS);
-  NODE_MODEL = result[0];
-  NODE_DEFAULT_ATTRIBUTES = result[1];
+
+  var NODE_MODEL = result[0],
+      NODE_DEFAULT_ATTRIBUTES = result[1];
 
   result = extractModel(EDGE_MODEL_ELEMENTS);
-  EDGE_MODEL = result[0];
-  EDGE_DEFAULT_ATTRIBUTES = result[1];
+
+  var EDGE_MODEL = result[0],
+      EDGE_DEFAULT_ATTRIBUTES = result[1];
 
   // Instantiating our graph
   var graph = new Graph({
     defaultNodeAttributes: NODE_DEFAULT_ATTRIBUTES,
     defaultEdgeAttributes: EDGE_DEFAULT_ATTRIBUTES
   });
+
+  // Collecting meta
+  var meta = collectMeta(META_ELEMENTS),
+      lastModifiedDate = META_ELEMENT.getAttribute('lastmodifieddate');
+
+  graph.replaceAttributes(meta);
+
+  if (lastModifiedDate)
+    graph.setAttribute('lastModifiedDate', lastModifiedDate);
 
   // Adding nodes
   for (i = 0, l = NODE_ELEMENTS.length; i < l; i++) {
@@ -227,21 +262,21 @@ module.exports = function parse(Graph, source) {
 
     id = element.getAttribute('id');
     type = element.getAttribute('type') || DEFAULT_EDGE_TYPE;
-    source = element.getAttribute('source');
-    target = element.getAttribute('target');
+    s = element.getAttribute('source');
+    t = element.getAttribute('target');
     attributes = collectAttributes(EDGE_MODEL, element);
 
     if (id) {
       if (type === 'directed')
-        graph.addDirectedEdgeWithKey(id, source, target, attributes);
+        graph.addDirectedEdgeWithKey(id, s, t, attributes);
       else
-        graph.addUndirectedEdgeWithKey(id, source, target, attributes);
+        graph.addUndirectedEdgeWithKey(id, s, t, attributes);
     }
     else {
       if (type === 'directed')
-        graph.addDirectedEdge(source, target, attributes);
+        graph.addDirectedEdge(s, t, attributes);
       else
-        graph.addUndirectedEdge(source, target, attributes);
+        graph.addUndirectedEdge(s, t, attributes);
     }
   }
 
