@@ -9,7 +9,7 @@
     "node"
   ],
   "scripts": {
-    "lint": "eslint *.js",
+    "lint": "eslint *.js browser/**/*.js node/**/*.js",
     "test:browser": "mocha ./test/browser/endpoint.js",
     "test": "npm run test:browser"
   },

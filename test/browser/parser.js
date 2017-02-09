@@ -6,6 +6,8 @@ var assert = require('assert'),
     parser = require('../../browser/parser.js'),
     Graph = require('graphology');
 
+var resources = require('../resources');
+
 describe('Parser', function() {
 
   it('should throw if not given a valid constructor.', function() {
@@ -18,5 +20,11 @@ describe('Parser', function() {
     assert.throws(function() {
       parser(Graph, null);
     }, /source/);
+  });
+
+  it('should succeed in parsing a simple file.', function() {
+    const graph = parser(Graph, resources.minimal);
+
+    // console.log(graph);
   });
 });
