@@ -9,7 +9,8 @@
     "web"
   ],
   "scripts": {
-    "lint": "eslint *.js"
+    "lint": "eslint *.js",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
