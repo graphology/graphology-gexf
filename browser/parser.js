@@ -65,6 +65,23 @@ function toRGBString(element) {
 }
 
 /**
+ * Function returning the first matching tag of the `viz` namespace matching
+ * the desired tag name.
+ *
+ * @param  {Node}   element - Target DOM element.
+ * @param  {string} name    - Tag name.
+ * @return {Node}
+ */
+function getFirstMatchingVizTag(element, name) {
+  var vizElement = element.getElementsByTagName('viz:' + name)[0];
+
+  if (!vizElement)
+    vizElement = element.getElementsByTagNameNS('viz', name)[0];
+
+  return vizElement;
+}
+
+/**
  * Function used to collect meta information.
  *
  * @param  {Array<Node>} elements - Target DOM element.
@@ -205,23 +222,6 @@ function collectAttributes(model, element) {
 }
 
 /**
- * Function returning the first matching tag of the `viz` namespace matching
- * the desired tag name.
- *
- * @param  {Node}   element - Target DOM element.
- * @param  {string} name    - Tag name.
- * @return {Node}
- */
-function getFirstMatchingVizTag(element, name) {
-  var vizElement = element.getElementsByTagName('viz:' + name)[0];
-
-  if (!vizElement)
-    vizElement = element.getElementsByTagNameNS('viz', name)[0];
-
-  return vizElement;
-}
-
-/**
  * Function taking either a string or a document and returning a
  * graphology instance.
  *
@@ -254,8 +254,7 @@ module.exports = function parse(Graph, source) {
     throw new Error('graphology-gexf/browser/parser: source should either be a XML document or a string.');
 
   // Finding useful elements
-  var ROOT_ELEMENT = xmlDoc.getElementsByTagName('gexf')[0],
-      GRAPH_ELEMENT = xmlDoc.getElementsByTagName('graph')[0],
+  var GRAPH_ELEMENT = xmlDoc.getElementsByTagName('graph')[0],
       META_ELEMENT = xmlDoc.getElementsByTagName('meta')[0],
       META_ELEMENTS = (META_ELEMENT && META_ELEMENT.childNodes) || [],
       NODE_ELEMENTS = xmlDoc.getElementsByTagName('node'),
