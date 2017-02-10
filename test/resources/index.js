@@ -23,7 +23,7 @@ function loadFile(name) {
   return fs.readFileSync(
     path.join(__dirname, name + '.gexf'),
     'utf-8'
-  );
+  ).trim();
 }
 
 var MAP = {};

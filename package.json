@@ -43,6 +43,7 @@
     "extends": "@yomguithereal/eslint-config"
   },
   "dependencies": {
-    "graphology-utils": "^1.1.1"
+    "graphology-utils": "^1.1.1",
+    "xml-writer": "^1.6.0"
   }
 }
