@@ -5,13 +5,17 @@
  * Testing utilities used by both the browser & the node version.
  */
 var assert = require('assert'),
-    definitions = require('./definitions.js'),
+    parserDefinitions = require('./definitions/parser.js'),
+    writerDefinitions = require('./definitions/writer.js'),
     resources = require('./resources'),
     Graph = require('graphology');
 
+/**
+ * Testing the parser on all of our test files.
+ */
 exports.testAllFiles = function(parser) {
 
-  definitions.forEach(function(definition) {
+  parserDefinitions.forEach(function(definition) {
     if (definition.skip)
       return;
 
@@ -24,6 +28,37 @@ exports.testAllFiles = function(parser) {
       assert.deepEqual(graph.getAttributes(), info.meta);
       assert.strictEqual(graph.order, info.order);
       assert.strictEqual(graph.size, info.size);
+    });
+  });
+};
+
+/**
+ * Testing the writer on all of our test graphs.
+ */
+exports.testWriter = function(writer) {
+
+  describe('Writer', function() {
+
+    it('should throw when given an invalid graphology instance.', function() {
+
+      assert.throws(function() {
+        writer(null);
+      }, /graphology/);
+    });
+
+    writerDefinitions.forEach(function(definition) {
+      if (definition.skip)
+        return;
+
+      var resource = resources[definition.gexf],
+          graph = definition.graph();
+
+      it('should correctly write the "' + definition.title + '" graph.', function() {
+        var string = writer(graph);
+
+        // console.log(string);
+        assert.strictEqual(string, resource);
+      });
     });
   });
 };

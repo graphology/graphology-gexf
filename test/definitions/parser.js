@@ -1,6 +1,6 @@
 /**
- * Graphology Browser GEXF Unit Tests Definitions
- * ===============================================
+ * Graphology Browser GEXF Unit Tests Parser Definitions
+ * ======================================================
  *
  * Definitions of the GEXF files stored in `./resources` so we can test
  * that the parser works as expected.

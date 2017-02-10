@@ -7,6 +7,7 @@ var fs = require('fs'),
 
 var FILES = [
   'arctic',
+  'basic',
   'case',
   'celegans',
   'data',
