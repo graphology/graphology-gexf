@@ -32,10 +32,85 @@ var VALID_GEXF_TYPES = new Set([
 var VIZ_RESERVED_NAMES = new Set([
   'color',
   'size',
-  'position',
+  'x',
+  'y',
+  'z',
   'shape',
   'thickness'
 ]);
+
+var RGBA_TEST = /^\s*rgba?\s*\(/i,
+    RGBA_MATCH = /^\s*rgba?\s*\(\s*([0-9]*)\s*,\s*([0-9]*)\s*,\s*([0-9]*)\s*(?:,\s*([.0-9]*))?\)\s*$/;
+
+/**
+ * Function used to transform a CSS color into a RGBA object.
+ *
+ * @param  {string} value - Target value.
+ * @return {object}
+ */
+function CSSColorToRGBA(value) {
+  if (!value || typeof value !== 'string')
+    return {};
+
+  if (value[0] === '#') {
+    value = value.slice(1);
+
+    return (value.length === 3) ?
+      {
+        r: parseInt(value[0] + value[0], 16),
+        g: parseInt(value[1] + value[1], 16),
+        b: parseInt(value[2] + value[2], 16)
+      } :
+      {
+        r: parseInt(value[0] + value[1], 16),
+        g: parseInt(value[2] + value[3], 16),
+        b: parseInt(value[4] + value[5], 16)
+      };
+  }
+  else if (RGBA_TEST.test(value)) {
+    var result = {};
+
+    value = value.match(RGBA_MATCH);
+    result.r = +value[1];
+    result.g = +value[2];
+    result.b = +value[3];
+
+    if (value[4])
+      result.a = +value[4];
+
+    return result;
+  }
+
+  return {};
+}
+
+/**
+ * Function used to map an element's attributes to a standardized map of
+ * GEXF expected properties (label, viz, attributes).
+ *
+ * @param  {object} attributes - The element's attributes.
+ * @return {object}
+ */
+function DEFAULT_ELEMENT_REDUCER(attributes) {
+  var output = {},
+      name;
+
+  for (name in attributes) {
+    if (name === 'label') {
+      output.label = attributes.label;
+    }
+    else if (VIZ_RESERVED_NAMES.has(name)) {
+      output.viz = output.viz || {};
+      output.viz[name] = attributes[name];
+    }
+    else {
+      output.attributes = output.attributes || {};
+      output.attributes[name] = attributes[name];
+    }
+  }
+
+  return output;
+}
 
 /**
  * Function used to check whether the given integer is 32 bits or not.
@@ -44,7 +119,7 @@ var VIZ_RESERVED_NAMES = new Set([
  * @return {boolean}
  */
 function is32BitInteger(number) {
-  return !(number > 0x7FFFFFFF || number < -0x7FFFFFFF);
+  return number <= 0x7FFFFFFF && number >= -0x7FFFFFFF;
 }
 
 /**
@@ -79,6 +154,49 @@ function detectValueType(value) {
 }
 
 /**
+ * Function used to collect data from a graph's nodes.
+ *
+ * @param  {Graph}    graph   - Target graph.
+ * @param  {function} reducer - Function reducing the nodes attributes.
+ * @return {array}
+ */
+function collectNodeData(graph, reducer) {
+  var nodes = graph.nodes(),
+      data;
+
+  for (var i = 0, l = nodes.length; i < l; i++) {
+    data = reducer(graph.getNodeAttributes(nodes[i]));
+    data.key = nodes[i];
+    nodes[i] = data;
+  }
+
+  return nodes;
+}
+
+/**
+ * Function used to collect data from a graph's edges.
+ *
+ * @param  {Graph}    graph   - Target graph.
+ * @param  {function} reducer - Function reducing the edges attributes.
+ * @return {array}
+ */
+function collectEdgeData(graph, reducer) {
+  var edges = graph.edges(),
+      data;
+
+  for (var i = 0, l = edges.length; i < l; i++) {
+    data = reducer(graph.getEdgeAttributes(edges[i]));
+    data.key = edges[i];
+    data.source = graph.source(edges[i]);
+    data.target = graph.target(edges[i]);
+    data.undirected = graph.undirected(edges[i]);
+    edges[i] = data;
+  }
+
+  return edges;
+}
+
+/**
  * Function used to infer the model of the graph's nodes or edges.
  *
  * @param  {array} elements - The graph's relevant elements.
@@ -94,10 +212,10 @@ function inferModel(elements) {
   for (var i = 0, l = elements.length; i < l; i++) {
     attributes = elements[i].attributes;
 
-    for (k in attributes) {
-      if (k === 'label' || VIZ_RESERVED_NAMES.has(k))
-        continue;
+    if (!attributes)
+      continue;
 
+    for (k in attributes) {
       type = detectValueType(attributes[k]);
 
       if (!model[k])
@@ -155,7 +273,7 @@ function writeElements(writer, type, model, elements) {
 
   for (i = 0, l = elements.length; i < l; i++) {
     element = elements[i];
-    attributes = element.attributes || {};
+    attributes = element.attributes;
 
     writer.startElement(type);
     writer.writeAttribute('id', element.key);
@@ -170,16 +288,13 @@ function writeElements(writer, type, model, elements) {
       writer.writeAttribute('target', element.target);
     }
 
-    if ('label' in attributes)
-      writer.writeAttribute('label', attributes.label);
+    if (element.label)
+      writer.writeAttribute('label', element.label);
 
-    if (!emptyModel) {
+    if (!emptyModel && element.attributes) {
       writer.startElement('attvalues');
 
       for (name in model) {
-        if (name === 'label')
-          continue;
-
         if (name in attributes) {
           writer.startElement('attvalue');
           writer.writeAttribute('for', name);
@@ -209,6 +324,8 @@ function cast(type, value) {
     return value.join('|');
   return '' + value;
 }
+
+// TODO: change collection of attributes to permit custom mapping
 
 /**
  * Function taking a graphology instance & outputting a gexf string.
@@ -259,8 +376,8 @@ module.exports = function writer(graph, options) {
   );
 
   // Processing model
-  var nodes = graph.exportNodes(),
-      edges = graph.exportEdges();
+  var nodes = collectNodeData(graph, DEFAULT_ELEMENT_REDUCER),
+      edges = collectEdgeData(graph, DEFAULT_ELEMENT_REDUCER);
 
   var nodeModel = inferModel(nodes);
 

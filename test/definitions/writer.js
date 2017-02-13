@@ -23,7 +23,12 @@ module.exports = [
         male: false,
         age: 22,
         surname: 'Ghost',
-        mixed: 45
+        mixed: 45,
+        x: 12,
+        y: 35,
+        size: 34,
+        color: 'rgba(234,34,12,0.6)',
+        shape: 'circle'
       });
 
       graph.addNode('John', {
@@ -31,11 +36,15 @@ module.exports = [
         male: true,
         age: 34,
         surname: 'Appleseed',
-        mixed: 'hello'
+        mixed: 'hello',
+        color: '#ccc'
       });
 
       graph.addEdgeWithKey('J-S', 'John', 'Suzy', {
-        weight: 456
+        weight: 456,
+        color: '#CCCFFF',
+        thickness: 34,
+        shape: 'dotted'
       });
 
       return graph;
