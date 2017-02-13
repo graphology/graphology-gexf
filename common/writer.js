@@ -13,9 +13,13 @@ var isGraph = require('graphology-utils/is-graph'),
 /**
  * Constants.
  */
-var DEFAULT_ENCODING = 'UTF-8',
-    GEXF_NAMESPACE = 'http://www.gexf.net/1.2draft',
+var GEXF_NAMESPACE = 'http://www.gexf.net/1.2draft',
     GEXF_VIZ_NAMESPACE = 'http:///www.gexf.net/1.1draft/viz';
+
+var DEFAULTS = {
+  encoding: 'UTF-8',
+  pretty: true
+};
 
 var VALID_GEXF_TYPES = new Set([
   'integer',
@@ -380,14 +384,13 @@ function cast(type, value) {
   return '' + value;
 }
 
-// TODO: change collection of attributes to permit custom mapping
-
 /**
  * Function taking a graphology instance & outputting a gexf string.
  *
  * @param  {Graph}  graph        - Target graphology instance.
  * @param  {object} options      - Options:
  * @param  {string}   [encoding]   - Character encoding.
+ * @paral  {boolean}  [pretty]     - Whether to pretty print output.
  * @return {string}              - GEXF string.
  */
 module.exports = function writer(graph, options) {
@@ -396,11 +399,9 @@ module.exports = function writer(graph, options) {
 
   options = options || {};
 
-  var writer = new XMLWriter(true);
+  var writer = new XMLWriter(options.encoding !== false);
 
-  var ENCODING = options.encoding || DEFAULT_ENCODING;
-
-  writer.startDocument('1.0', ENCODING);
+  writer.startDocument('1.0', options.encoding || DEFAULTS.encoding);
 
   // Starting gexf
   writer.startElement('gexf');
