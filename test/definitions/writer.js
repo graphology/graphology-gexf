@@ -37,7 +37,10 @@ module.exports = [
         age: 34,
         surname: 'Appleseed',
         mixed: 'hello',
-        color: '#ccc'
+        color: '#ccc',
+        size: 103,
+        x: 45,
+        y: 0
       });
 
       graph.addEdgeWithKey('J-S', 'John', 'Suzy', {

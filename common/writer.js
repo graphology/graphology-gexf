@@ -8,15 +8,14 @@ var isGraph = require('graphology-utils/is-graph'),
     XMLWriter = require('xml-writer');
 
 // TODO: options => prettyPrint, nodeModel, edgeModel
+// TODO: handle object in color, position with object for viz
 
 /**
  * Constants.
  */
 var DEFAULT_ENCODING = 'UTF-8',
     GEXF_NAMESPACE = 'http://www.gexf.net/1.2draft',
-    GEXF_VIZ_NAMESPACE = 'http:///www.gexf.net/1.1draft/viz',
-    XSI_URL = 'http://www.w3.org/2001/XMLSchema-instance',
-    XSI_SCHEMA_LOCATION = 'http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd';
+    GEXF_VIZ_NAMESPACE = 'http:///www.gexf.net/1.1draft/viz';
 
 var VALID_GEXF_TYPES = new Set([
   'integer',
@@ -264,8 +263,11 @@ function writeElements(writer, type, model, elements) {
   var emptyModel = !Object.keys(model).length,
       element,
       name,
+      color,
       edgeType,
       attributes,
+      viz,
+      k,
       i,
       l;
 
@@ -274,6 +276,7 @@ function writeElements(writer, type, model, elements) {
   for (i = 0, l = elements.length; i < l; i++) {
     element = elements[i];
     attributes = element.attributes;
+    viz = element.viz;
 
     writer.startElement(type);
     writer.writeAttribute('id', element.key);
@@ -291,7 +294,7 @@ function writeElements(writer, type, model, elements) {
     if (element.label)
       writer.writeAttribute('label', element.label);
 
-    if (!emptyModel && element.attributes) {
+    if (!emptyModel && attributes) {
       writer.startElement('attvalues');
 
       for (name in model) {
@@ -304,6 +307,58 @@ function writeElements(writer, type, model, elements) {
       }
 
       writer.endElement();
+    }
+
+    if (viz) {
+
+      //-- 1) Color
+      if (viz.color) {
+        color = CSSColorToRGBA(viz.color);
+
+        writer.startElementNS('viz', 'color');
+
+        for (k in color)
+          writer.writeAttribute(k, color[k]);
+
+        writer.endElement();
+      }
+
+      //-- 2) Size
+      if ('size' in viz) {
+        writer.startElementNS('viz', 'size');
+        writer.writeAttribute('value', viz.size);
+        writer.endElement();
+      }
+
+      //-- 3) Position
+      if ('x' in viz || 'y' in viz || 'z' in viz) {
+        writer.startElementNS('viz', 'position');
+
+        if ('x' in viz)
+          writer.writeAttribute('x', viz.x);
+
+        if ('y' in viz)
+          writer.writeAttribute('y', viz.y);
+
+        if ('z' in viz)
+          writer.writeAttribute('z', viz.z);
+
+        writer.endElement();
+      }
+
+      //-- 4) Shape
+      if (viz.shape) {
+        writer.startElementNS('viz', 'shape');
+        writer.writeAttribute('value', viz.shape);
+        writer.endElement();
+      }
+
+      //-- 5) Thickness
+      if ('thickness' in viz) {
+        writer.startElementNS('viz', 'thickness');
+        writer.writeAttribute('value', viz.thickness);
+        writer.endElement();
+      }
     }
 
     writer.endElement();
@@ -352,8 +407,6 @@ module.exports = function writer(graph, options) {
   writer.writeAttribute('version', '1.2');
   writer.writeAttribute('xmlns', GEXF_NAMESPACE);
   writer.writeAttribute('xmlns:viz', GEXF_VIZ_NAMESPACE);
-  writer.writeAttribute('xsi', XSI_URL);
-  writer.writeAttribute('xsi:schemaLocation', XSI_SCHEMA_LOCATION);
 
   // Processing meta
   writer.startElement('meta');

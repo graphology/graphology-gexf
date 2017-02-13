@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz" xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd">
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
     <meta lastmodifieddate="2105-12-23">
         <author>Yomguithereal</author>
         <title>Basic Graph</title>
@@ -22,6 +22,10 @@
                     <attvalue for="surname" value="Ghost"/>
                     <attvalue for="mixed" value="45"/>
                 </attvalues>
+                <viz:color r="234" g="34" b="12" a="0.6"/>
+                <viz:size value="34"/>
+                <viz:position x="12" y="35"/>
+                <viz:shape value="circle"/>
             </node>
             <node id="John" label="John, Appleseed">
                 <attvalues>
@@ -30,6 +34,9 @@
                     <attvalue for="surname" value="Appleseed"/>
                     <attvalue for="mixed" value="hello"/>
                 </attvalues>
+                <viz:color r="204" g="204" b="204"/>
+                <viz:size value="103"/>
+                <viz:position x="45" y="0"/>
             </node>
         </nodes>
         <edges>
@@ -37,6 +44,9 @@
                 <attvalues>
                     <attvalue for="weight" value="456"/>
                 </attvalues>
+                <viz:color r="204" g="207" b="255"/>
+                <viz:shape value="dotted"/>
+                <viz:thickness value="34"/>
             </edge>
         </edges>
     </graph>
