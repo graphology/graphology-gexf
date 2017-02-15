@@ -4,5 +4,5 @@
  *
  * Endpoint gathering both parser & writer for the browser.
  */
-exports.parser = require('./parser.js');
-exports.writer = require('../common/writer.js');
+exports.parse = require('./parser.js');
+exports.write = require('../common/writer.js');

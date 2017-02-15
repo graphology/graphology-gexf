@@ -4,4 +4,4 @@
  *
  * Endpoint gathering both parser & writer for Node.js.
  */
-exports.writer = require('../common/writer.js');
+exports.write = require('../common/writer.js');
