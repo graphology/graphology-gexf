@@ -71,6 +71,22 @@ module.exports = [
     }
   },
   {
+    title: 'Rio',
+    gexf: 'rio',
+    basics: {
+      version: '1.2',
+      mode: 'static',
+      defaultEdgeType: 'directed',
+      meta: {
+        creator: 'Gephi 0.8.1',
+        description: '',
+        lastModifiedDate: '2015-03-30'
+      },
+      order: 366,
+      size: 1107
+    }
+  },
+  {
     title: 'Data Graph',
     gexf: 'data',
     basics: {
