@@ -78,6 +78,9 @@ function getFirstMatchingVizTag(element, name) {
   if (!vizElement)
     vizElement = element.getElementsByTagNameNS('viz', name)[0];
 
+  if (!vizElement)
+    vizElement = element.getElementsByTagName(name)[0];
+
   return vizElement;
 }
 
