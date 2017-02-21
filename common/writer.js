@@ -399,7 +399,9 @@ module.exports = function writer(graph, options) {
 
   options = options || {};
 
-  var writer = new XMLWriter(options.encoding !== false);
+  var indent = options.pretty === false ? false : '  ';
+
+  var writer = new XMLWriter(indent);
 
   writer.startDocument('1.0', options.encoding || DEFAULTS.encoding);
 
