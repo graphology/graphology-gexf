@@ -5,7 +5,10 @@
  *
  * Browser version of the graphology GEXF parser.
  */
-var isGraphConstructor = require('graphology-utils/is-graph-constructor');
+var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
+    helpers = require('../common/helpers.js');
+
+var cast = helpers.cast;
 
 /**
  * Function checking whether the given value is a NaN.
@@ -15,36 +18,6 @@ var isGraphConstructor = require('graphology-utils/is-graph-constructor');
  */
 function isReallyNaN(value) {
   return value !== value;
-}
-
-/**
- * Function used to cast a string value to the desired type.
- *
- * @param  {string} type - Value type.
- * @param  {string} type - String value.
- * @return {any}         - Parsed type.
- */
-function cast(type, value) {
-  switch (type) {
-    case 'boolean':
-      value = (value === 'true');
-      break;
-
-    case 'integer':
-    case 'long':
-    case 'float':
-    case 'double':
-      value = +value;
-      break;
-
-    case 'liststring':
-      value = value ? value.split('|') : [];
-      break;
-
-    default:
-  }
-
-  return value;
 }
 
 /**
@@ -232,7 +205,7 @@ function collectAttributes(model, element) {
  * @param  {string|Document} source - The source to parse.
  */
 
-// TODO: option to map the data to the attributes for customization
+// TODO: option to map the data to the attributes for customization, detectType, detectMulti, nodeModel, edgeModel, nodeReducer, edgeReducer
 module.exports = function parse(Graph, source) {
   var xmlDoc = source;
 
