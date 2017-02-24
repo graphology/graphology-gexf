@@ -58,9 +58,13 @@ module.exports = [
       },
       size: 3,
       edge: {
-        key: 1,
-        source: 1,
-        target: 2
+        key: 2,
+        source: 2,
+        target: 3,
+        attributes: {
+          label: 'Nice edge',
+          weight: 4.56
+        }
       }
     }
   },
@@ -221,7 +225,10 @@ module.exports = [
         key: 2278,
         source: 267,
         target: 304,
-        undirected: true
+        undirected: true,
+        attributes: {
+          weight: 2
+        }
       }
     }
   },
@@ -258,7 +265,9 @@ module.exports = [
         key: 204,
         source: '67.0',
         target: '57.0',
-        attributes: {}
+        attributes: {
+          weight: 3
+        }
       }
     }
   },

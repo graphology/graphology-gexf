@@ -91,16 +91,20 @@ function CSSColorToRGBA(value) {
  * Function used to map an element's attributes to a standardized map of
  * GEXF expected properties (label, viz, attributes).
  *
+ * @param  {string} type       - The element's type
  * @param  {object} attributes - The element's attributes.
  * @return {object}
  */
-function DEFAULT_ELEMENT_REDUCER(attributes) {
+function DEFAULT_ELEMENT_REDUCER(type, attributes) {
   var output = {},
       name;
 
   for (name in attributes) {
     if (name === 'label') {
       output.label = attributes.label;
+    }
+    else if (type === 'edge' && name === 'weight') {
+      output.weight = attributes.weight;
     }
     else if (VIZ_RESERVED_NAMES.has(name)) {
       output.viz = output.viz || {};
@@ -114,6 +118,9 @@ function DEFAULT_ELEMENT_REDUCER(attributes) {
 
   return output;
 }
+
+const DEFAULT_NODE_REDUCER = DEFAULT_ELEMENT_REDUCER.bind(null, 'node'),
+      DEFAULT_EDGE_REDUCER = DEFAULT_ELEMENT_REDUCER.bind(null, 'edge');
 
 /**
  * Function used to check whether the given integer is 32 bits or not.
@@ -293,6 +300,9 @@ function writeElements(writer, type, model, elements) {
 
       writer.writeAttribute('source', element.source);
       writer.writeAttribute('target', element.target);
+
+      if ('weight' in element)
+        writer.writeAttribute('weight', element.weight);
     }
 
     if (element.label)
@@ -425,15 +435,18 @@ module.exports = function writer(graph, options) {
 
   writer.endElement();
   writer.startElement('graph');
-  writer.defaultEdgeType = graph.type === 'undirected' ? 'undirected' : 'directed';
+  writer.defaultEdgeType = graph.type === 'mixed' ?
+    'directed' :
+    graph.type;
+
   writer.writeAttribute(
     'defaultedgetype',
-    writer.defaultedgetype
+    writer.defaultEdgeType
   );
 
   // Processing model
-  var nodes = collectNodeData(graph, DEFAULT_ELEMENT_REDUCER),
-      edges = collectEdgeData(graph, DEFAULT_ELEMENT_REDUCER);
+  var nodes = collectNodeData(graph, DEFAULT_NODE_REDUCER),
+      edges = collectEdgeData(graph, DEFAULT_EDGE_REDUCER);
 
   var nodeModel = inferModel(nodes);
 

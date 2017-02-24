@@ -126,10 +126,14 @@ function extractModel(elements) {
  */
 function collectAttributes(model, element) {
   var data = {},
-      label = element.getAttribute('label');
+      label = element.getAttribute('label'),
+      weight = element.getAttribute('weight');
 
   if (label)
     data.label = label;
+
+  if (weight)
+    data.weight = +weight;
 
   var valueElements = element.getElementsByTagName('attvalue'),
       valueElement,

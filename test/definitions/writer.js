@@ -47,8 +47,12 @@ module.exports = [
         weight: 456,
         color: '#CCCFFF',
         thickness: 34,
-        shape: 'dotted'
+        shape: 'dotted',
+        label: 'Fine edge',
+        number: 12
       });
+
+      graph.addUndirectedEdgeWithKey('J~S', 'John', 'Suzy');
 
       return graph;
     }
