@@ -307,8 +307,20 @@ module.exports = function parse(Graph, source) {
     attributes = collectAttributes(EDGE_MODEL, element);
 
     // If we encountered an edge with a different type, we upgrade the graph
-    if (type !== graph.type && graph.type !== 'mixed')
+    if (type !== graph.type && graph.type !== 'mixed') {
       graph.upgradeToMixed();
+    }
+
+    // If we encountered twice the same edge, we upgrade the graph
+    if (
+      !graph.multi &&
+      (
+        (type === 'directed' && graph.hasDirectedEdge(s, t)) ||
+        (graph.hasUndirectedEdge(s, t))
+      )
+    ) {
+      graph.upgradeToMulti();
+    }
 
     if (id) {
       if (type === 'directed')

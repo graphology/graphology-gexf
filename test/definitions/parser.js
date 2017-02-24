@@ -229,9 +229,8 @@ module.exports = [
   {
     title: 'Celegans Graph',
     gexf: 'celegans',
-    skip: true,
     basics: {
-      type: 'directed',
+      type: 'undirected',
       multi: true,
       version: '1.1',
       mode: 'static',
