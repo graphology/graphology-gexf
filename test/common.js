@@ -28,6 +28,8 @@ exports.testAllFiles = function(parser) {
       assert.deepEqual(graph.getAttributes(), info.meta);
       assert.strictEqual(graph.order, info.order);
       assert.strictEqual(graph.size, info.size);
+      assert.strictEqual(graph.type, info.type);
+      assert.strictEqual(graph.multi, info.multi);
     });
   });
 };

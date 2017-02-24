@@ -10,6 +10,8 @@ module.exports = [
     title: 'Minimal Graph',
     gexf: 'minimal',
     basics: {
+      type: 'directed',
+      multi: false,
       version: '1.2',
       mode: 'static',
       defaultEdgeType: 'directed',
@@ -41,9 +43,47 @@ module.exports = [
     }
   },
   {
+    title: 'Mixed Graph',
+    gexf: 'mixed',
+    basics: {
+      type: 'mixed',
+      multi: false,
+      version: '1.2',
+      mode: 'static',
+      defaultEdgeType: 'directed',
+      meta: {
+        creator: 'Yomguithereal',
+        description: 'A mixed graph',
+        lastModifiedDate: '2009-03-20'
+      },
+      order: 3,
+      node_test: {
+        id: 0,
+        node: {
+          id: '0',
+          label: 'Hello'
+        }
+      },
+      size: 3,
+      edge_test: {
+        id: 0,
+        edge: {
+          id: '0',
+          label: '',
+          source: '0',
+          target: '1',
+          type: 'directed',
+          weight: 1
+        }
+      }
+    }
+  },
+  {
     title: 'Yeast',
     gexf: 'yeast',
     basics: {
+      type: 'undirected',
+      multi: false,
       version: '1.1',
       mode: 'static',
       defaultEdgeType: 'undirected',
@@ -74,6 +114,8 @@ module.exports = [
     title: 'Rio',
     gexf: 'rio',
     basics: {
+      type: 'directed',
+      multi: false,
       version: '1.2',
       mode: 'static',
       defaultEdgeType: 'directed',
@@ -90,6 +132,8 @@ module.exports = [
     title: 'Data Graph',
     gexf: 'data',
     basics: {
+      type: 'directed',
+      multi: false,
       version: '1.2',
       mode: 'static',
       defaultEdgeType: 'directed',
@@ -134,6 +178,8 @@ module.exports = [
     title: 'Arctic',
     gexf: 'arctic',
     basics: {
+      type: 'directed',
+      multi: false,
       version: '1.0',
       mode: 'static',
       defaultEdgeType: 'undirected',
@@ -185,6 +231,8 @@ module.exports = [
     gexf: 'celegans',
     skip: true,
     basics: {
+      type: 'directed',
+      multi: true,
       version: '1.1',
       mode: 'static',
       defaultEdgeType: 'undirected',
@@ -215,6 +263,8 @@ module.exports = [
     title: 'Les Misérables Graph',
     gexf: 'les_miserables',
     basics: {
+      type: 'directed',
+      multi: false,
       version: '1.1',
       mode: 'static',
       defaultEdgeType: 'directed',
@@ -267,6 +317,8 @@ module.exports = [
     title: 'Edge Viz Graph',
     gexf: 'edge_viz',
     basics: {
+      type: 'directed',
+      multi: false,
       version: '1.1',
       mode: 'static',
       defaultEdgeType: 'directed',
@@ -323,6 +375,8 @@ module.exports = [
     title: 'Edge Data Graph',
     gexf: 'edge_data',
     basics: {
+      type: 'directed',
+      multi: false,
       version: '1.2',
       mode: 'static',
       defaultEdgeType: 'directed',
@@ -375,6 +429,8 @@ module.exports = [
     title: 'Case & Attributes Graph',
     gexf: 'case',
     basics: {
+      type: 'directed',
+      multi: false,
       version: '1.2',
       mode: 'static',
       defaultEdgeType: 'directed',
@@ -429,6 +485,8 @@ module.exports = [
     title: 'ListString Graph',
     gexf: 'liststring',
     basics: {
+      type: 'directed',
+      multi: false,
       version: '1.2',
       mode: 'static',
       defaultEdgeType: 'directed',

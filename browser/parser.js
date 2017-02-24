@@ -265,8 +265,14 @@ module.exports = function parse(Graph, source) {
   var EDGE_MODEL = result[0],
       EDGE_DEFAULT_ATTRIBUTES = result[1];
 
+  // Polling the first edge to guess the type of the edges
+  var graphType = EDGE_ELEMENTS[0] ?
+    (EDGE_ELEMENTS[0].getAttribute('type') || DEFAULT_EDGE_TYPE) :
+    'mixed';
+
   // Instantiating our graph
   var graph = new Graph({
+    type: graphType,
     defaultNodeAttributes: NODE_DEFAULT_ATTRIBUTES,
     defaultEdgeAttributes: EDGE_DEFAULT_ATTRIBUTES
   });
@@ -299,6 +305,10 @@ module.exports = function parse(Graph, source) {
     s = element.getAttribute('source');
     t = element.getAttribute('target');
     attributes = collectAttributes(EDGE_MODEL, element);
+
+    // If we encountered an edge with a different type, we upgrade the graph
+    if (type !== graph.type && graph.type !== 'mixed')
+      graph.upgradeToMixed();
 
     if (id) {
       if (type === 'directed')

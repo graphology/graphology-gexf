@@ -16,6 +16,7 @@ var FILES = [
   'les_miserables',
   'liststring',
   'minimal',
+  'mixed',
   'rio',
   'yeast'
 ];
