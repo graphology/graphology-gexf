@@ -1,6 +1,6 @@
 {
   "name": "graphology-gexf",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "GEXF parser & writer for graphology.",
   "main": "index.js",
   "files": [
