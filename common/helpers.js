@@ -33,4 +33,4 @@ exports.cast = function(type, value) {
   }
 
   return value;
-}
+};

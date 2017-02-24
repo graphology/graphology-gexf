@@ -21,16 +21,16 @@ var DEFAULTS = {
   pretty: true
 };
 
-var VALID_GEXF_TYPES = new Set([
-  'integer',
-  'long',
-  'double',
-  'float',
-  'boolean',
-  'liststring',
-  'string',
-  'anyURI'
-]);
+// var VALID_GEXF_TYPES = new Set([
+//   'integer',
+//   'long',
+//   'double',
+//   'float',
+//   'boolean',
+//   'liststring',
+//   'string',
+//   'anyURI'
+// ]);
 
 var VIZ_RESERVED_NAMES = new Set([
   'color',
@@ -119,8 +119,8 @@ function DEFAULT_ELEMENT_REDUCER(type, attributes) {
   return output;
 }
 
-const DEFAULT_NODE_REDUCER = DEFAULT_ELEMENT_REDUCER.bind(null, 'node'),
-      DEFAULT_EDGE_REDUCER = DEFAULT_ELEMENT_REDUCER.bind(null, 'edge');
+var DEFAULT_NODE_REDUCER = DEFAULT_ELEMENT_REDUCER.bind(null, 'node'),
+    DEFAULT_EDGE_REDUCER = DEFAULT_ELEMENT_REDUCER.bind(null, 'edge');
 
 /**
  * Function used to check whether the given integer is 32 bits or not.
@@ -161,6 +161,19 @@ function detectValueType(value) {
   }
 
   return 'string';
+}
+
+/**
+ * Function used to cast the given value into the given type.
+ *
+ * @param  {string} type  - Target type.
+ * @param  {any}    value - Value to cast.
+ * @return {string}
+ */
+function cast(type, value) {
+  if (type === 'liststring' && Array.isArray(value))
+    return value.join('|');
+  return '' + value;
 }
 
 /**
@@ -382,19 +395,6 @@ function writeElements(writer, type, model, elements) {
 }
 
 /**
- * Function used to cast the given value into the given type.
- *
- * @param  {string} type  - Target type.
- * @param  {any}    value - Value to cast.
- * @return {string}
- */
-function cast(type, value) {
-  if (type === 'liststring' && Array.isArray(value))
-    return value.join('|');
-  return '' + value;
-}
-
-/**
  * Function taking a graphology instance & outputting a gexf string.
  *
  * @param  {Graph}  graph        - Target graphology instance.
@@ -403,7 +403,7 @@ function cast(type, value) {
  * @paral  {boolean}  [pretty]     - Whether to pretty print output.
  * @return {string}              - GEXF string.
  */
-module.exports = function writer(graph, options) {
+module.exports = function write(graph, options) {
   if (!isGraph(graph))
     throw new Error('graphology-gexf/writer: invalid graphology instance.');
 
@@ -428,7 +428,7 @@ module.exports = function writer(graph, options) {
   if (graphAttributes.lastModifiedDate)
     writer.writeAttribute('lastmodifieddate', graphAttributes.lastModifiedDate);
 
-  for (k in graphAttributes) {
+  for (var k in graphAttributes) {
     if (k !== 'lastModifiedDate')
       writer.writeElement(k, graphAttributes[k]);
   }

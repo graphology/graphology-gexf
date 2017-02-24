@@ -10,7 +10,7 @@
     "node"
   ],
   "scripts": {
-    "lint": "eslint *.js browser/**/*.js node/**/*.js",
+    "lint": "eslint ./**/*.js",
     "test:browser": "mocha ./test/browser/endpoint.js",
     "test": "npm run test:browser"
   },
@@ -40,7 +40,10 @@
     "xmldom": "^0.1.27"
   },
   "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
+    "extends": "@yomguithereal/eslint-config",
+    "globals": {
+      "Set": true
+    }
   },
   "dependencies": {
     "graphology-utils": "^1.1.1",

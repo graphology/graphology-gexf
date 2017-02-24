@@ -31,15 +31,15 @@ exports.testAllFiles = function(parser) {
       assert.strictEqual(graph.type, info.type);
       assert.strictEqual(graph.multi, info.multi);
 
-      const node = info.node;
+      var node = info.node;
 
       assert.strictEqual(graph.hasNode(node.key), true);
       assert.deepEqual(
         graph.getNodeAttributes(node.key),
-        info.node.attributes || {}
+        info.node.attributes || {}
       );
 
-      const edge = info.edge;
+      var edge = info.edge;
 
       if (edge.key)
         assert.strictEqual(graph.hasEdge(edge.key), true);
@@ -52,14 +52,14 @@ exports.testAllFiles = function(parser) {
         assert.strictEqual(graph.directed(edge.key), !edge.undirected);
       }
 
-      let attributes;
+      var attributes;
 
       if (edge.key)
         attributes = graph.getEdgeAttributes(edge.key);
       else
         attributes = graph.getEdgeAttributes(edge.source, edge.target);
 
-      assert.deepEqual(attributes, edge.attributes || {});
+      assert.deepEqual(attributes, edge.attributes || {});
     });
   });
 };
