@@ -30,6 +30,36 @@ exports.testAllFiles = function(parser) {
       assert.strictEqual(graph.size, info.size);
       assert.strictEqual(graph.type, info.type);
       assert.strictEqual(graph.multi, info.multi);
+
+      const node = info.node;
+
+      assert.strictEqual(graph.hasNode(node.key), true);
+      assert.deepEqual(
+        graph.getNodeAttributes(node.key),
+        info.node.attributes || {}
+      );
+
+      const edge = info.edge;
+
+      if (edge.key)
+        assert.strictEqual(graph.hasEdge(edge.key), true);
+      else
+        assert.strictEqual(graph.hasEdge(edge.source, edge.target), true);
+
+      if (edge.key) {
+        assert.strictEqual(graph.source(edge.key), '' + edge.source);
+        assert.strictEqual(graph.target(edge.key), '' + edge.target);
+        assert.strictEqual(graph.directed(edge.key), !edge.undirected);
+      }
+
+      let attributes;
+
+      if (edge.key)
+        attributes = graph.getEdgeAttributes(edge.key);
+      else
+        attributes = graph.getEdgeAttributes(edge.source, edge.target);
+
+      assert.deepEqual(attributes, edge.attributes || {});
     });
   });
 };

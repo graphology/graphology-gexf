@@ -206,6 +206,7 @@ function collectAttributes(model, element) {
  */
 
 // TODO: option to map the data to the attributes for customization, nodeModel, edgeModel, nodeReducer, edgeReducer
+// TODO: option to disable the model mapping heuristic
 module.exports = function parse(Graph, source) {
   var xmlDoc = source;
 

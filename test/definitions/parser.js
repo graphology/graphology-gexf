@@ -21,24 +21,17 @@ module.exports = [
         lastModifiedDate: '2009-03-20'
       },
       order: 2,
-      node_test: {
-        id: 0,
-        node: {
-          id: '0',
+      node: {
+        key: 0,
+        attributes: {
           label: 'Hello'
         }
       },
       size: 1,
-      edge_test: {
-        id: 0,
-        edge: {
-          id: '0',
-          label: '',
-          source: '0',
-          target: '1',
-          type: 'directed',
-          weight: 1
-        }
+      edge: {
+        key: 0,
+        source: 0,
+        target: 1
       }
     }
   },
@@ -57,24 +50,17 @@ module.exports = [
         lastModifiedDate: '2009-03-20'
       },
       order: 3,
-      node_test: {
-        id: 0,
-        node: {
-          id: '0',
-          label: 'Hello'
+      node: {
+        key: 1,
+        attributes: {
+          label: 'one'
         }
       },
       size: 3,
-      edge_test: {
-        id: 0,
-        edge: {
-          id: '0',
-          label: '',
-          source: '0',
-          target: '1',
-          type: 'directed',
-          weight: 1
-        }
+      edge: {
+        key: 1,
+        source: 1,
+        target: 2
       }
     }
   },
@@ -89,24 +75,18 @@ module.exports = [
       defaultEdgeType: 'undirected',
       meta: {},
       order: 2361,
-      node_test: {
-        id: 502,
-        node: {
-          id: '5443',
-          label: 'YDR283C'
+      node: {
+        key: 5025,
+        attributes: {
+          label: 'YNR007C'
         }
       },
       size: 7182,
-      edge_test: {
-        id: 1300,
-        edge: {
-          id: '14488',
-          label: '',
-          source: '5096',
-          target: '6882',
-          type: 'undirected',
-          weight: 1
-        }
+      edge: {
+        key: 20347,
+        source: 7197,
+        target: 7198,
+        undirected: true
       }
     }
   },
@@ -125,7 +105,34 @@ module.exports = [
         lastModifiedDate: '2015-03-30'
       },
       order: 366,
-      size: 1107
+      node: {
+        key: 'ncs4',
+        attributes: {
+          'label': 'http://cupuladospovos.org.br',
+          'Label2': 'cupuladospovos.org.br',
+          'Nature of institution:': 'Event',
+          'Category': 'Social Ecology',
+          'Latest Six Posts Frequency': 'Dially',
+          'Language': 'Portuguese',
+          'Information Resources': 'Multimedia',
+          'indegree': 12,
+          'outdegree': 31,
+          'degree': 43,
+          'size': 11.7894535,
+          'x': -168.71039,
+          'y': 5.129696,
+          'z': 0,
+          'color': 'rgb(144,107,198)'
+        }
+      },
+      size: 1107,
+      edge: {
+        source: 'ncs526',
+        target: 'ncs97',
+        attributes: {
+          hypertext: true
+        }
+      }
     }
   },
   {
@@ -142,35 +149,21 @@ module.exports = [
         description: 'A Web network',
         lastModifiedDate: '2009-03-20'
       },
-      model: [
-        {id: '0', title: 'url', type: 'string'},
-        {id: '1', title: 'indegree', type: 'float'},
-        {id: '2', title: 'frog', type: 'boolean', defaultValue: 'true'}
-      ],
       order: 4,
-      node_test: {
-        id: 1,
-        node: {
-          id: '1',
+      node: {
+        key: 1,
+        attributes: {
+          frog: true,
           label: 'Webatlas',
-          attributes: {
-            '0': 'http://webatlas.fr',
-            '1': 2,
-            '2': true
-          }
+          url: 'http://webatlas.fr',
+          indegree: 2
         }
       },
       size: 5,
-      edge_test: {
-        id: 3,
-        edge: {
-          id: '3',
-          label: '',
-          source: '2',
-          target: '1',
-          type: 'directed',
-          weight: 1
-        }
+      edge: {
+        key: 4,
+        source: 0,
+        target: 3
       }
     }
   },
@@ -184,45 +177,25 @@ module.exports = [
       mode: 'static',
       defaultEdgeType: 'undirected',
       meta: {},
-      model: [
-        {id: '0', title: 'nodedef', type: 'string'},
-        {id: '1', title: 'label', type: 'string'},
-        {id: '2', title: 'occurrences', type: 'integer'}
-      ],
       order: 1715,
-      node_test: {
-        id: 1100,
-        node: {
-          id: '1102',
-          label: 'Interglacial Period',
-          attributes: {
-            '0': 'n1102',
-            '1': 'Interglacial Period',
-            '2': 3
-          },
-          viz: {
-            color: 'rgb(153,255,255)',
-            position: {
-              x: -31.175037,
-              y: 179.857,
-              z: 0
-            },
-            size: 3.6317973
-          }
+      node: {
+        key: 5,
+        attributes: {
+          label: 'San Francisco',
+          color: 'rgb(255,51,51)',
+          x: -120.99793,
+          y: 63.12548,
+          z: 0,
+          nodedef: 'n5',
+          occurrences: 14,
+          size: 3.7195435
         }
       },
       size: 6676,
-      edge_test: {
-        id: 305,
-        edge: {
-          id: '305',
-          label: '',
-          source: '263',
-          target: '113',
-          type: 'undirected',
-          weight: 1,
-          viz: {}
-        }
+      edge: {
+        key: 1251,
+        source: 637,
+        target: 300
       }
     }
   },
@@ -237,24 +210,18 @@ module.exports = [
       defaultEdgeType: 'undirected',
       meta: {},
       order: 306,
-      node_test: {
-        id: 203,
-        node: {
-          id: '281',
-          label: '282'
+      node: {
+        key: 109,
+        attributes: {
+          label: '110'
         }
       },
       size: 2345,
-      edge_test: {
-        id: 1602,
-        edge: {
-          id: '285',
-          label: '',
-          source: '38',
-          target: '302',
-          type: 'undirected',
-          weight: 2
-        }
+      edge: {
+        key: 2278,
+        source: 267,
+        target: 304,
+        undirected: true
       }
     }
   },
@@ -272,43 +239,26 @@ module.exports = [
         title: 'Les Misérables, the characters coappearance weighted graph',
         lastModifiedDate: '2010-05-29+01:27'
       },
-      model: [
-        {id: 'authority', title: 'Authority', type: 'float'},
-        {id: 'hub', title: 'Hub', type: 'float'}
-      ],
       order: 77,
-      node_test: {
-        id: 5,
-        node: {
-          id: '5.0',
+      node: {
+        key: '5.0',
+        attributes: {
           label: 'Geborand',
-          attributes: {
-            authority: 0.0034188034,
-            hub: 0.0034188034
-          },
-          viz: {
-            color: 'rgb(179,0,0)',
-            position: {
-              x: 318.6509,
-              y: 85.41602,
-              z: 0
-            },
-            size: 15
-          }
+          authority: 0.0034188034,
+          hub: 0.0034188034,
+          x: 318.6509,
+          y: 85.41602,
+          z: 0,
+          color: 'rgb(179,0,0)',
+          size: 15
         }
       },
       size: 254,
-      edge_test: {
-        id: 200,
-        edge: {
-          id: '198',
-          label: '',
-          source: '66.0',
-          target: '62.0',
-          type: 'directed',
-          weight: 2,
-          viz: {}
-        }
+      edge: {
+        key: 204,
+        source: '67.0',
+        target: '57.0',
+        attributes: {}
       }
     }
   },
@@ -326,46 +276,29 @@ module.exports = [
         title: 'An edge viz test graph',
         lastModifiedDate: '2010-05-29+01:27'
       },
-      model: [
-        {id: 'authority', title: 'Authority', type: 'float'},
-        {id: 'hub', title: 'Hub', type: 'float'}
-      ],
       order: 2,
-      node_test: {
-        id: 0,
-        node: {
-          id: '0.0',
+      node: {
+        key: '0.0',
+        attributes: {
+          authority: 0.01880342,
+          hub: 0.01880342,
           label: 'Myriel',
-          attributes: {
-            authority: 0.01880342,
-            hub: 0.01880342
-          },
-          viz: {
-            color: 'rgb(216,72,45)',
-            position: {
-              x: 268.72385,
-              y: 91.18155,
-              z: 0
-            },
-            size: 22.714287
-          }
+          color: 'rgb(216,72,45)',
+          x: 268.72385,
+          y: 91.18155,
+          z: 0,
+          size: 22.714287
         }
       },
       size: 1,
-      edge_test: {
-        id: 0,
-        edge: {
-          id: '0',
-          label: '',
-          source: '1.0',
-          target: '0.0',
-          type: 'directed',
-          weight: 1,
-          viz: {
-            color: 'rgba(179,0,0,0.5)',
-            thickness: 2,
-            shape: 'dotted'
-          }
+      edge: {
+        key: 0,
+        source: '1.0',
+        target: '0.0',
+        attributes: {
+          color: 'rgba(179,0,0,0.5)',
+          thickness: 2,
+          shape: 'dotted'
         }
       }
     }
@@ -384,42 +317,24 @@ module.exports = [
         description: 'A Web network',
         lastModifiedDate: '2009-03-20'
       },
-      model: [
-        {id: '0', title: 'url', type: 'string'},
-        {id: '1', title: 'indegree', type: 'float'},
-        {id: '2', title: 'frog', type: 'boolean', defaultValue: 'true'}
-      ],
-      edgeModel: [
-        {id: 'predicate', title: 'Predicate', type: 'string', defaultValue: 'likes'},
-        {id: 'confidence', title: 'Confidence', type: 'float'}
-      ],
       order: 4,
-      node_test: {
-        id: 1,
-        node: {
-          id: '1',
+      node: {
+        key: 1,
+        attributes: {
           label: 'Webatlas',
-          attributes: {
-            '0': 'http://webatlas.fr',
-            '1': 2,
-            '2': true
-          }
+          url: 'http://webatlas.fr',
+          indegree: 2,
+          frog: true
         }
       },
       size: 5,
-      edge_test: {
-        id: 3,
-        edge: {
-          id: '3',
-          label: '',
-          attributes: {
-            predicate: 'likes',
-            confidence: 0.88
-          },
-          source: '2',
-          target: '1',
-          type: 'directed',
-          weight: 1
+      edge: {
+        key: 3,
+        source: 2,
+        target: 1,
+        attributes: {
+          predicate: 'likes',
+          confidence: 0.88
         }
       }
     }
@@ -438,44 +353,25 @@ module.exports = [
         description: 'Survey One',
         lastModifiedDate: '02-05-2014'
       },
-      model: [
-        {id: 'name', title: 'name', type: 'string'},
-        {id: 'status', title: 'status', type: 'string'},
-        {id: 'list', title: 'list', type: 'string'},
-        {id: 'Gender', title: 'Gender', type: 'string'},
-        {id: 'Position', title: 'Position', type: 'string'}
-      ],
-      edgeModel: [
-        {id: 'Q1', title: 'Q1', type: 'string'}
-      ],
       order: 10,
-      node_test: {
-        id: 1,
-        node: {
-          id: '5362389af1e6696e0395864e',
+      node: {
+        key: '5362389af1e6696e0395864e',
+        attributes: {
           label: '2',
-          attributes: {
-            Gender: 'Female',
-            Position: 'Graduate',
-            list: 'Respondent',
-            name: 'Cleopatra Cordray',
-            status: 'Submitted'
-          }
+          Gender: 'Female',
+          Position: 'Graduate',
+          list: 'Respondent',
+          name: 'Cleopatra Cordray',
+          status: 'Submitted'
         }
       },
       size: 20,
-      edge_test: {
-        id: 3,
-        edge: {
-          id: '4',
-          label: '',
-          attributes: {
-            Q1: 'true'
-          },
-          source: '5362389af1e6696e0395864e',
-          target: '5362389af1e6696e03958654',
-          type: 'directed',
-          weight: 1
+      edge: {
+        key: 4,
+        source: '5362389af1e6696e0395864e',
+        target: '5362389af1e6696e03958654',
+        attributes: {
+          Q1: 'true'
         }
       }
     }
@@ -494,35 +390,21 @@ module.exports = [
         description: 'A Web network',
         lastModifiedDate: '2009-03-20'
       },
-      model: [
-        {id: '0', title: 'types', type: 'liststring'},
-        {id: '1', title: 'indegree', type: 'float'},
-        {id: '2', title: 'frog', type: 'boolean', defaultValue: 'true'}
-      ],
       order: 4,
-      node_test: {
-        id: 0,
-        node: {
-          id: '0',
-          label: 'Gephi',
-          attributes: {
-            '0': ['cooking', 'money'],
-            '1': 1,
-            '2': true
-          }
+      node: {
+        key: 0,
+        attributes: {
+          types: ['cooking', 'money'],
+          indegree: 1,
+          frog: true,
+          label: 'Gephi'
         }
       },
       size: 5,
-      edge_test: {
-        id: 3,
-        edge: {
-          id: '3',
-          label: '',
-          source: '2',
-          target: '1',
-          type: 'directed',
-          weight: 1
-        }
+      edge: {
+        key: 3,
+        source: 2,
+        target: 1
       }
     }
   }
