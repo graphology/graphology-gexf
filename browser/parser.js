@@ -205,7 +205,7 @@ function collectAttributes(model, element) {
  * @param  {string|Document} source - The source to parse.
  */
 
-// TODO: option to map the data to the attributes for customization, detectType, detectMulti, nodeModel, edgeModel, nodeReducer, edgeReducer
+// TODO: option to map the data to the attributes for customization, nodeModel, edgeModel, nodeReducer, edgeReducer
 module.exports = function parse(Graph, source) {
   var xmlDoc = source;
 
@@ -249,7 +249,7 @@ module.exports = function parse(Graph, source) {
   }
 
   // Information
-  var DEFAULT_EDGE_TYPE = GRAPH_ELEMENT.getAttribute('defaultedgetype') || 'directed';
+  var DEFAULT_EDGE_TYPE = GRAPH_ELEMENT.getAttribute('defaultedgetype') || 'undirected';
 
   if (DEFAULT_EDGE_TYPE === 'mutual')
     DEFAULT_EDGE_TYPE = 'undirected';
