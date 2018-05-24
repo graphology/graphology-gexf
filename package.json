@@ -36,8 +36,8 @@
   "devDependencies": {
     "@yomguithereal/eslint-config": "^4.0.0",
     "eslint": "^4.19.1",
-    "graphology": "^0.11.3",
-    "mocha": "^5.0.5"
+    "graphology": "^0.11.4",
+    "mocha": "^5.2.0"
   },
   "eslintConfig": {
     "extends": "@yomguithereal/eslint-config",
