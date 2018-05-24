@@ -88,7 +88,6 @@ exports.testWriter = function(writer) {
       it('should correctly write the "' + definition.title + '" graph.', function() {
         var string = writer(graph);
 
-        // console.log(string);
         assert.strictEqual(string, resource);
       });
     });
