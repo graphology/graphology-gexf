@@ -117,6 +117,12 @@ function is32BitInteger(number) {
   return number <= 0x7FFFFFFF && number >= -0x7FFFFFFF;
 }
 
+/**
+ * Function used to check whether the given value is "empty".
+ *
+ * @param  {any} value - Target value.
+ * @return {boolean}
+ */
 function isEmptyValue(value) {
   return (
     typeof value === 'undefined' ||
@@ -412,6 +418,9 @@ function writeElements(writer, type, model, elements) {
   writer.endElement();
 }
 
+/**
+ * Defaults.
+ */
 var DEFAULTS = {
   encoding: 'UTF-8',
   pretty: true,

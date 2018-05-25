@@ -46,8 +46,49 @@ var gexf = require('graphology-gexf/browser');
 
 // Writing the graph
 var gexfString = gexf.write(graph);
+
+// Using custom formatting for nodes & edges
+var gexfString = gexf.write(graph, {
+  formatNode: function(key, attributes) {
+    return {
+      label: attributes.label,
+      attributes: {
+        age: attributes.age,
+        name: attributes.name
+      },
+      viz: {
+        color: '#FF0',
+        x: attributes.x,
+        y: attributes.y,
+        shape: 'circle',
+        size: 20
+      }
+    };
+  },
+  formatEdge: function(key, attributes) {
+    return {
+      label: attributes.label,
+      attributes: {
+        number: attributes.number
+      },
+      weight: attributes.weight,
+      viz: {
+        color: '#FF0',
+        x: attributes.x,
+        y: attributes.y,
+        shape: 'dotted',
+        thickness: 20
+      }
+    };
+  }
+});
 ```
 
 *Arguments*
 
 * **graph** *Graph*: graphology instance to write.
+* **options** *?object*: Options:
+  - **encoding** *?string* [`UTF-8`]: encoding declaration.
+  - **formatNode** *?function*: function returning the node's data to write.
+  - **formatEdge** *?function*: function returning the edge's data to write.
+  - **pretty** *?boolean* [`true`]: pretty-print output?
