@@ -1,3 +1,4 @@
+/* eslint no-self-compare: 0 */
 /**
  * Graphology Common GEXF Writer
  * ==============================
@@ -7,7 +8,6 @@
 var isGraph = require('graphology-utils/is-graph'),
     XMLWriter = require('xml-writer');
 
-// TODO: options => prettyPrint, nodeModel, edgeModel
 // TODO: handle object in color, position with object for viz
 
 /**
@@ -15,22 +15,6 @@ var isGraph = require('graphology-utils/is-graph'),
  */
 var GEXF_NAMESPACE = 'http://www.gexf.net/1.2draft',
     GEXF_VIZ_NAMESPACE = 'http:///www.gexf.net/1.1draft/viz';
-
-var DEFAULTS = {
-  encoding: 'UTF-8',
-  pretty: true
-};
-
-// var VALID_GEXF_TYPES = new Set([
-//   'integer',
-//   'long',
-//   'double',
-//   'float',
-//   'boolean',
-//   'liststring',
-//   'string',
-//   'anyURI'
-// ]);
 
 var VIZ_RESERVED_NAMES = new Set([
   'color',
@@ -91,11 +75,12 @@ function CSSColorToRGBA(value) {
  * Function used to map an element's attributes to a standardized map of
  * GEXF expected properties (label, viz, attributes).
  *
- * @param  {string} type       - The element's type
+ * @param  {string} type       - The element's type.
+ * @param  {string} key        - The element's key.
  * @param  {object} attributes - The element's attributes.
  * @return {object}
  */
-function DEFAULT_ELEMENT_REDUCER(type, attributes) {
+function DEFAULT_ELEMENT_FORMATTER(type, key, attributes) {
   var output = {},
       name;
 
@@ -119,8 +104,8 @@ function DEFAULT_ELEMENT_REDUCER(type, attributes) {
   return output;
 }
 
-var DEFAULT_NODE_REDUCER = DEFAULT_ELEMENT_REDUCER.bind(null, 'node'),
-    DEFAULT_EDGE_REDUCER = DEFAULT_ELEMENT_REDUCER.bind(null, 'edge');
+var DEFAULT_NODE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'node'),
+    DEFAULT_EDGE_FORMATTER = DEFAULT_ELEMENT_FORMATTER.bind(null, 'edge');
 
 /**
  * Function used to check whether the given integer is 32 bits or not.
@@ -132,6 +117,15 @@ function is32BitInteger(number) {
   return number <= 0x7FFFFFFF && number >= -0x7FFFFFFF;
 }
 
+function isEmptyValue(value) {
+  return (
+    typeof value === 'undefined' ||
+    value === null ||
+    value === '' ||
+    value !== value
+  );
+}
+
 /**
  * Function used to detect a JavaScript's value type in the GEXF model.
  *
@@ -139,10 +133,16 @@ function is32BitInteger(number) {
  * @return {string}
  */
 function detectValueType(value) {
+
+  if (isEmptyValue(value))
+    return 'empty';
+
   if (Array.isArray(value))
     return 'liststring';
+
   if (typeof value === 'boolean')
     return 'boolean';
+
   if (typeof value === 'object')
     return 'string';
 
@@ -180,16 +180,18 @@ function cast(type, value) {
  * Function used to collect data from a graph's nodes.
  *
  * @param  {Graph}    graph   - Target graph.
- * @param  {function} reducer - Function reducing the nodes attributes.
+ * @param  {function} format  - Function formatting the nodes attributes.
  * @return {array}
  */
-function collectNodeData(graph, reducer) {
+function collectNodeData(graph, format) {
   var nodes = graph.nodes(),
+      node,
       data;
 
   for (var i = 0, l = nodes.length; i < l; i++) {
-    data = reducer(graph.getNodeAttributes(nodes[i]));
-    data.key = nodes[i];
+    node = nodes[i];
+    data = format(node, graph.getNodeAttributes(node));
+    data.key = node;
     nodes[i] = data;
   }
 
@@ -205,14 +207,16 @@ function collectNodeData(graph, reducer) {
  */
 function collectEdgeData(graph, reducer) {
   var edges = graph.edges(),
+      edge,
       data;
 
   for (var i = 0, l = edges.length; i < l; i++) {
-    data = reducer(graph.getEdgeAttributes(edges[i]));
-    data.key = edges[i];
-    data.source = graph.source(edges[i]);
-    data.target = graph.target(edges[i]);
-    data.undirected = graph.undirected(edges[i]);
+    edge = edges[i];
+    data = reducer(edge, graph.getEdgeAttributes(edge));
+    data.key = edge;
+    data.source = graph.source(edge);
+    data.target = graph.target(edge);
+    data.undirected = graph.undirected(edge);
     edges[i] = data;
   }
 
@@ -225,6 +229,8 @@ function collectEdgeData(graph, reducer) {
  * @param  {array} elements - The graph's relevant elements.
  * @return {array}
  */
+
+// TODO: on large graph, we could also sample or let the user indicate the types
 function inferModel(elements) {
   var model = {},
       attributes,
@@ -240,6 +246,9 @@ function inferModel(elements) {
 
     for (k in attributes) {
       type = detectValueType(attributes[k]);
+
+      if (type === 'empty')
+        continue;
 
       if (!model[k])
         model[k] = type;
@@ -288,8 +297,10 @@ function writeElements(writer, type, model, elements) {
       element,
       name,
       color,
+      value,
       edgeType,
       attributes,
+      weight,
       viz,
       k,
       i,
@@ -314,7 +325,9 @@ function writeElements(writer, type, model, elements) {
       writer.writeAttribute('source', element.source);
       writer.writeAttribute('target', element.target);
 
-      if ('weight' in element)
+      weight = element.weight;
+
+      if ((typeof weight === 'number' && !isNaN(weight)) || typeof weight === 'string')
         writer.writeAttribute('weight', element.weight);
     }
 
@@ -326,9 +339,14 @@ function writeElements(writer, type, model, elements) {
 
       for (name in model) {
         if (name in attributes) {
+          value = attributes[name];
+
+          if (isEmptyValue(value))
+            continue;
+
           writer.startElement('attvalue');
           writer.writeAttribute('for', name);
-          writer.writeAttribute('value', cast(model[name], attributes[name]));
+          writer.writeAttribute('value', cast(model[name], value));
           writer.endElement();
         }
       }
@@ -394,13 +412,22 @@ function writeElements(writer, type, model, elements) {
   writer.endElement();
 }
 
+var DEFAULTS = {
+  encoding: 'UTF-8',
+  pretty: true,
+  formatNode: DEFAULT_NODE_FORMATTER,
+  formatEdge: DEFAULT_EDGE_FORMATTER
+};
+
 /**
  * Function taking a graphology instance & outputting a gexf string.
  *
  * @param  {Graph}  graph        - Target graphology instance.
  * @param  {object} options      - Options:
  * @param  {string}   [encoding]   - Character encoding.
- * @paral  {boolean}  [pretty]     - Whether to pretty print output.
+ * @param  {boolean}  [pretty]     - Whether to pretty print output.
+ * @param  {function} [formatNode] - Function formatting nodes' output.
+ * @param  {function} [formatEdge] - Function formatting edges' output.
  * @return {string}              - GEXF string.
  */
 module.exports = function write(graph, options) {
@@ -410,6 +437,9 @@ module.exports = function write(graph, options) {
   options = options || {};
 
   var indent = options.pretty === false ? false : '  ';
+
+  var formatNode = options.formatNode || DEFAULTS.formatNode,
+      formatEdge = options.formatEdge || DEFAULTS.formatEdge;
 
   var writer = new XMLWriter(indent);
 
@@ -445,8 +475,8 @@ module.exports = function write(graph, options) {
   );
 
   // Processing model
-  var nodes = collectNodeData(graph, DEFAULT_NODE_REDUCER),
-      edges = collectEdgeData(graph, DEFAULT_EDGE_REDUCER);
+  var nodes = collectNodeData(graph, formatNode),
+      edges = collectEdgeData(graph, formatEdge);
 
   var nodeModel = inferModel(nodes);
 

@@ -86,7 +86,7 @@ exports.testWriter = function(writer) {
           graph = definition.graph();
 
       it('should correctly write the "' + definition.title + '" graph.', function() {
-        var string = writer(graph);
+        var string = writer(graph, definition.options);
 
         assert.strictEqual(string, resource);
       });
