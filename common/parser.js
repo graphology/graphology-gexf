@@ -120,11 +120,12 @@ function extractModel(elements) {
 /**
  * Function used to collect an element's attributes.
  *
- * @param  {object} model   - Data model to use.
- * @param  {Node}   element - Target DOM element.
- * @return {object}         - The collected attributes.
+ * @param  {object} model    - Data model to use.
+ * @param  {object} defaults - Default values.
+ * @param  {Node}   element  - Target DOM element.
+ * @return {object}          - The collected attributes.
  */
-function collectAttributes(model, element) {
+function collectAttributes(model, defaults, element) {
   var data = {},
       label = element.getAttribute('label'),
       weight = element.getAttribute('weight');
@@ -150,6 +151,14 @@ function collectAttributes(model, element) {
       model[id].type,
       valueElement.getAttribute('value')
     );
+  }
+
+  // Applying default values
+  var k;
+
+  for (k in defaults) {
+    if (!(k in data))
+      data[k] = defaults[k];
   }
 
   // TODO: shortcut here to avoid viz when namespace is not set
@@ -283,9 +292,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
     // Instantiating our graph
     var graph = new Graph({
-      type: graphType,
-      defaultNodeAttributes: NODE_DEFAULT_ATTRIBUTES,
-      defaultEdgeAttributes: EDGE_DEFAULT_ATTRIBUTES
+      type: graphType
     });
 
     // Collecting meta
@@ -303,7 +310,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
 
       graph.addNode(
         element.getAttribute('id'),
-        collectAttributes(NODE_MODEL, element)
+        collectAttributes(NODE_MODEL, NODE_DEFAULT_ATTRIBUTES, element)
       );
     }
 
@@ -315,7 +322,7 @@ module.exports = function createParserFunction(DOMParser, Document) {
       type = element.getAttribute('type') || DEFAULT_EDGE_TYPE;
       s = element.getAttribute('source');
       t = element.getAttribute('target');
-      attributes = collectAttributes(EDGE_MODEL, element);
+      attributes = collectAttributes(EDGE_MODEL, EDGE_DEFAULT_ATTRIBUTES, element);
 
       // If we encountered an edge with a different type, we upgrade the graph
       if (type !== graph.type && graph.type !== 'mixed') {
