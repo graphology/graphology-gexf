@@ -14,15 +14,19 @@ npm install graphology-gexf
 
 ## Usage
 
-* [Browser parser](#browser-parser)
-* [Browser writer](#browser-writer)
+* [Parser](#parser)
+* [Writer](#writer)
 
-### Browser parser
+### Parser
 
 The parser must be passed a `graphology` constructor and is able to read either a string, or an `XMLDocument` instance.
 
 ```js
 var Graph = require('graphology');
+
+// Node
+var gexf = require('graphology-gexf');
+// Browser
 var gexf = require('graphology-gexf/browser');
 
 // Reading a string
@@ -37,11 +41,14 @@ var graph = gexf.parse(Graph, xmlDocument);
 * **constructor** *GraphClass*: graphology constructor to use.
 * **source** *string|Document*: source data to parse.
 
-### Browser writer
+### Writer
 
 The writer must be passed a `graphology` instance and will output a GEXF string.
 
 ```js
+// Node
+var gexf = require('graphology-gexf');
+// Browser
 var gexf = require('graphology-gexf/browser');
 
 // Writing the graph

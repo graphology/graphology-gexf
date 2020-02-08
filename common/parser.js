@@ -240,14 +240,14 @@ module.exports = function createParserFunction(DOMParser, Document) {
         l;
 
     if (!isGraphConstructor(Graph))
-      throw new Error('graphology-gexf/browser/parser: invalid Graph constructor.');
+      throw new Error('graphology-gexf/parser: invalid Graph constructor.');
 
     // If source is a string, we are going to parse it
     if (typeof source === 'string')
       xmlDoc = (new DOMParser()).parseFromString(source, 'application/xml');
 
     if (!(xmlDoc instanceof Document))
-      throw new Error('graphology-gexf/browser/parser: source should either be a XML document or a string.');
+      throw new Error('graphology-gexf/parser: source should either be a XML document or a string.');
 
     // Finding useful elements
     var GRAPH_ELEMENT = xmlDoc.getElementsByTagName('graph')[0],
