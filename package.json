@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/graphology/graphology-utils.git"
+    "url": "git+https://github.com/graphology/graphology-gexf.git"
   },
   "keywords": [
     "graph",
@@ -30,9 +30,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphology/graphology-utils/issues"
+    "url": "https://github.com/graphology/graphology-gexf/issues"
   },
-  "homepage": "https://github.com/graphology/graphology-utils#readme",
+  "homepage": "https://github.com/graphology/graphology-gexf#readme",
   "devDependencies": {
     "@yomguithereal/eslint-config": "^4.0.0",
     "eslint": "^6.8.0",
