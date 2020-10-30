@@ -222,7 +222,7 @@ function collectEdgeData(graph, reducer) {
     data.key = edge;
     data.source = graph.source(edge);
     data.target = graph.target(edge);
-    data.undirected = graph.undirected(edge);
+    data.undirected = graph.isUndirected(edge);
     edges[i] = data;
   }
 

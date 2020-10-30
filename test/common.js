@@ -49,7 +49,7 @@ exports.testAllFiles = function(parser) {
       if (edge.key) {
         assert.strictEqual(graph.source(edge.key), '' + edge.source);
         assert.strictEqual(graph.target(edge.key), '' + edge.target);
-        assert.strictEqual(graph.directed(edge.key), !edge.undirected);
+        assert.strictEqual(graph.isDirected(edge.key), !edge.undirected);
       }
 
       var attributes;
