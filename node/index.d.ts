@@ -1,4 +1,4 @@
-import {Attributes, Graph, GraphConstructor} from 'graphology-types';
+import Graph, {Attributes, GraphConstructor} from 'graphology-types';
 import {GexfWriterOptions} from '../common/types';
 
 export function parse<
