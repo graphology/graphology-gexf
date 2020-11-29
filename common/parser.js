@@ -1,9 +1,9 @@
 /* eslint no-self-compare: 0 */
 /**
- * Graphology Browser GEXF Parser
- * ===============================
+ * Graphology GEXF Parser
+ * =======================
  *
- * Browser version of the graphology GEXF parser using DOMParser to function.
+ * Version of the graphology GEXF parser using DOMParser to function.
  */
 var isGraphConstructor = require('graphology-utils/is-graph-constructor'),
     helpers = require('../common/helpers.js');
