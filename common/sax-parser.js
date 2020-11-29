@@ -25,11 +25,37 @@ module.exports = function saxParser(Graph, callback) {
     return callback(e);
   };
 
-  // var state = null;
+  // State
+  var state = {
+    inGraph: false
+  };
+
+  /* eslint no-unused-vars: 0 */
+  var graph = null;
+
+  // Defaults
+  var DEFAULT_EDGE_TYPE = 'undirected';
+
+  // Parser declaration
+  parser.onopentag = function(tag) {
+    if (tag.name === 'graph') {
+      state.inGraph = true;
+
+      if (tag.attributes.defaultedgetype)
+        DEFAULT_EDGE_TYPE = tag.attributes.defaultedgetype;
+
+      if (DEFAULT_EDGE_TYPE === 'mutual')
+        DEFAULT_EDGE_TYPE = 'undirected';
+
+      graph = new Graph({type: DEFAULT_EDGE_TYPE});
+
+      return;
+    }
+  };
 
   // Returning a protected write interface
   return {
     write: parser.write.bind(parser),
-    close: parser.writer.close(parser)
+    close: parser.close.bind(parser)
   };
 };

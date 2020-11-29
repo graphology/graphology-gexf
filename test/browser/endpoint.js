@@ -11,5 +11,6 @@ global.Document = doc.constructor;
 
 describe('Browser', function() {
   require('./parser.js');
+  require('./sax-parser.js');
   require('../common.js').testWriter(require('../../browser/writer.js'));
 });
