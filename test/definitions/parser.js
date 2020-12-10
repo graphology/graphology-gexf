@@ -105,7 +105,6 @@ module.exports = [
       defaultEdgeType: 'directed',
       meta: {
         creator: 'Gephi 0.8.1',
-        description: '',
         lastModifiedDate: '2015-03-30'
       },
       order: 366,

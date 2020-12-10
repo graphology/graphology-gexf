@@ -65,7 +65,8 @@ function getFirstMatchingVizTag(element, name) {
  */
 function collectMeta(elements) {
   var meta = {},
-      element;
+      element,
+      value;
 
   for (var i = 0, l = elements.length; i < l; i++) {
     element = elements[i];
@@ -73,7 +74,10 @@ function collectMeta(elements) {
     if (element.nodeName === '#text')
       continue;
 
-    meta[element.tagName.toLowerCase()] = element.textContent;
+    value = element.textContent.trim();
+
+    if (value)
+      meta[element.tagName.toLowerCase()] = element.textContent;
   }
 
   return meta;
