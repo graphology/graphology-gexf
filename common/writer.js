@@ -190,16 +190,14 @@ function cast(type, value) {
  * @return {array}
  */
 function collectNodeData(graph, format) {
-  var nodes = graph.nodes(),
-      node,
-      data;
+  var nodes = new Array(graph.order);
+  var i = 0;
 
-  for (var i = 0, l = nodes.length; i < l; i++) {
-    node = nodes[i];
-    data = format(node, graph.getNodeAttributes(node));
+  graph.forEachNode(function(node, attr) {
+    var data = format(node, attr);
     data.key = node;
-    nodes[i] = data;
-  }
+    nodes[i++] = data;
+  });
 
   return nodes;
 }
@@ -212,19 +210,17 @@ function collectNodeData(graph, format) {
  * @return {array}
  */
 function collectEdgeData(graph, reducer) {
-  var edges = graph.edges(),
-      edge,
-      data;
+  var edges = new Array(graph.size);
+  var i = 0;
 
-  for (var i = 0, l = edges.length; i < l; i++) {
-    edge = edges[i];
-    data = reducer(edge, graph.getEdgeAttributes(edge));
+  graph.forEachEdge(function(edge, attr, source, target, _sa, _ta, undirected) {
+    var data = reducer(edge, attr);
     data.key = edge;
-    data.source = graph.source(edge);
-    data.target = graph.target(edge);
-    data.undirected = graph.isUndirected(edge);
-    edges[i] = data;
-  }
+    data.source = source;
+    data.target = target;
+    data.undirected = undirected;
+    edges[i++] = data;
+  });
 
   return edges;
 }
