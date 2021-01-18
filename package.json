@@ -37,9 +37,9 @@
   "homepage": "https://github.com/graphology/graphology-gexf#readme",
   "devDependencies": {
     "@yomguithereal/eslint-config": "^4.0.0",
-    "eslint": "^7.15.0",
-    "graphology": "^0.19.2",
-    "graphology-types": "^0.19.0",
+    "eslint": "^7.18.0",
+    "graphology": "^0.19.3",
+    "graphology-types": "^0.19.2",
     "mocha": "^8.2.1"
   },
   "eslintConfig": {
@@ -52,7 +52,7 @@
     "graphology-types": ">=0.19.0"
   },
   "dependencies": {
-    "graphology-utils": "^1.8.0",
+    "graphology-utils": "^2.0.0",
     "xmldom": "^0.4.0",
     "xml-writer": "^1.7.0"
   }
