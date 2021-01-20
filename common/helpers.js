@@ -45,5 +45,5 @@ exports.cast = function(type, value) {
 var SANITIZE_PATTERN = /["'<>&\s]/g;
 
 exports.sanitizeTagName = function sanitizeTagName(tagName) {
-  return tagName.replace(SANITIZE_PATTERN, '');
+  return tagName.replace(SANITIZE_PATTERN, '').trim();
 };
