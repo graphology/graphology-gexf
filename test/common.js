@@ -91,5 +91,14 @@ exports.testWriter = function(writer) {
         assert.strictEqual(string, resource);
       });
     });
+
+    it('should output valid XML even if graph attributes have illegal characters.', function() {
+      var graph = new Graph();
+      graph.replaceAttributes({'"': 'should not be included', 'Awesome Author': 'Yomguithereal'});
+
+      var gexf = writer(graph);
+
+      assert.strictEqual(gexf, resources.sanitized);
+    });
   });
 };

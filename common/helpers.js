@@ -34,3 +34,16 @@ exports.cast = function(type, value) {
 
   return value;
 };
+
+/**
+ * Function deleting illegal characters from a potential tag name to avoid
+ * generating invalid XML.
+ *
+ * @param  {string} type - Tag name.
+ * @return {string}
+ */
+var SANITIZE_PATTERN = /["'<>&\s]/g;
+
+exports.sanitizeTagName = function sanitizeTagName(tagName) {
+  return tagName.replace(SANITIZE_PATTERN, '');
+};

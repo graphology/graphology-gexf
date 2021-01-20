@@ -6,7 +6,8 @@
  * GEXF writer working for both node.js & the browser.
  */
 var isGraph = require('graphology-utils/is-graph'),
-    XMLWriter = require('xml-writer');
+    XMLWriter = require('xml-writer'),
+    sanitizeTagName = require('./helpers.js').sanitizeTagName;
 
 // TODO: handle object in color, position with object for viz
 
@@ -463,9 +464,18 @@ module.exports = function write(graph, options) {
   if (graphAttributes.lastModifiedDate)
     writer.writeAttribute('lastmodifieddate', graphAttributes.lastModifiedDate);
 
+  var metaTagName;
+
   for (var k in graphAttributes) {
-    if (k !== 'lastModifiedDate')
-      writer.writeElement(k, graphAttributes[k]);
+    if (k === 'lastModifiedDate')
+      continue;
+
+    metaTagName = sanitizeTagName(k);
+
+    if (!metaTagName)
+      continue;
+
+    writer.writeElement(metaTagName, graphAttributes[k]);
   }
 
   writer.endElement();

@@ -19,6 +19,7 @@ var FILES = [
   'minimal',
   'mixed',
   'rio',
+  'sanitized',
   'yeast'
 ];
 
