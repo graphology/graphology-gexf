@@ -6,6 +6,7 @@
  * GEXF writer working for both node.js & the browser.
  */
 var isGraph = require('graphology-utils/is-graph'),
+    inferType = require('graphology-utils/infer-type'),
     XMLWriter = require('xml-writer'),
     sanitizeTagName = require('./helpers.js').sanitizeTagName;
 
@@ -480,9 +481,12 @@ module.exports = function write(graph, options) {
 
   writer.endElement();
   writer.startElement('graph');
-  writer.defaultEdgeType = graph.type === 'mixed' ?
+
+  var type = inferType(graph);
+
+  writer.defaultEdgeType = type === 'mixed' ?
     'directed' :
-    graph.type;
+    type;
 
   writer.writeAttribute(
     'defaultedgetype',

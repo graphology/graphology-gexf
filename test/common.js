@@ -67,7 +67,7 @@ exports.testAllFiles = function(parser) {
 /**
  * Testing the writer on all of our test graphs.
  */
-exports.testWriter = function(writer) {
+exports.testWriter = function(writer, parser) {
 
   describe('Writer', function() {
 
@@ -99,6 +99,34 @@ exports.testWriter = function(writer) {
       var gexf = writer(graph);
 
       assert.strictEqual(gexf, resources.sanitized);
+    });
+
+    it('should write mixed graphs correctly.', function() {
+
+      // Undirected graph hiding in a mixed one
+      var graph = new Graph();
+
+      graph.mergeUndirectedEdge(1, 2);
+
+      var gexf = writer(graph);
+      var parsed = parser(Graph, gexf);
+
+      assert.strictEqual(parsed.type, 'undirected');
+      assert.strictEqual(parsed.directedSize, 0);
+      assert.strictEqual(parsed.undirectedSize, 1);
+
+      // True mixed graph
+      graph = new Graph();
+
+      graph.mergeEdge(1, 2);
+      graph.mergeUndirectedEdge(2, 3);
+
+      gexf = writer(graph);
+      parsed = parser(Graph, gexf);
+
+      assert.strictEqual(parsed.type, 'mixed');
+      assert.strictEqual(parsed.directedSize, 1);
+      assert.strictEqual(parsed.undirectedSize, 1);
     });
   });
 };
